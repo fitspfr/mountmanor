@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mount Manor Hotel Chennai – Modern Rooms, Banquets & Dining</title>
+    <meta
+      name="description"
+      content="Experience boutique business luxury at Mount Manor, Chennai. Book premium rooms, Delicia multi-cuisine dining, and banquet spaces 10 minutes from Chennai Airport."
+    />
+    
+    <!-- OpenGraph & Social Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mount Manor Hotel Chennai – Modern Rooms, Banquets & Dining" />
+    <meta
+      property="og:description"
+      content="Modern boutique hotel accommodations, banquet halls, and fine dining at GST Road, St. Thomas Mount, Chennai."
+    />
+    <meta property="og:site_name" content="Mount Manor" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mount Manor Hotel Chennai – Modern Rooms, Banquets & Dining" />
+    <meta
+      name="twitter:description"
+      content="Experience boutique business luxury at Mount Manor, Chennai. Book premium rooms, Delicia dining, and banquet spaces."
+    />
+
+    <!-- Google Fonts: Plus Jakarta Sans, DM Sans, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Schema.org JSON-LD for Hotel and Dining -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Hotel",
+          "@id": "https://mountmanor.com/#hotel",
+          "name": "Hotel Mount Manor",
+          "description": "Premium business-class hotel in Chennai opposite Officers Training Academy, offering modern suites, banquet halls, and fine dining.",
+          "telephone": "+91 7299975113",
+          "email": "reservations@mountmanor.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "No. 14, G.S.T Road, Opp. Officers Training Academy, St. Thomas Mount",
+            "addressLocality": "Chennai",
+            "addressRegion": "Tamil Nadu",
+            "postalCode": "600016",
+            "addressCountry": "IN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 13.0033,
+            "longitude": 80.2018
+          },
+          "starRating": {
+            "@type": "Rating",
+            "ratingValue": "4.2"
+          },
+          "amenityFeature": [
+            { "@type": "LocationFeatureSpecification", "name": "Free High-Speed Wi-Fi", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Airport Transit Shuttle", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Complimentary Breakfast Buffet", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Executive Conference Hall", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Delicia Multi-Cuisine Restaurant", "value": true }
+          ]
+        },
+        {
+          "@type": "FoodEstablishment",
+          "@id": "https://mountmanor.com/#delicia",
+          "name": "Delicia Restaurant at Mount Manor",
+          "servesCuisine": ["South Indian", "North Indian", "Continental", "Chinese"],
+          "priceRange": "$$",
+          "telephone": "+91 7299975115"
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-amber-500/30 selection:text-amber-200 min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

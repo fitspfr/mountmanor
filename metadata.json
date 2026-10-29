@@ -1,0 +1,6 @@
+{
+  "name": "Mount Manor - Modern Hospitality SaaS & API",
+  "description": "Modernized hospitality platform for Mount Manor Hotel Chennai featuring a high-converting guest booking engine, multi-tenant SaaS management, and third-party developer API sandbox.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
