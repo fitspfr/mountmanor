@@ -728,6 +728,38 @@ Route::prefix('v1')->middleware(['api', 'throttle:60,1'])->group(function () {
 app.get('/api/v1/backend-files', (_req: Request, res: Response) => {
   const fileManifest = [
     {
+      id: 'artisan-cli',
+      name: 'artisan',
+      category: 'Laravel Core & Entrypoints',
+      type: 'php',
+      path: 'backend-laravel/artisan',
+      description: 'Standard Laravel 11 CLI executable entrypoint'
+    },
+    {
+      id: 'bootstrap-app',
+      name: 'bootstrap/app.php',
+      category: 'Laravel Core & Entrypoints',
+      type: 'php',
+      path: 'backend-laravel/bootstrap/app.php',
+      description: 'Application bootstrap, API middleware, routing, and exception handlers'
+    },
+    {
+      id: 'public-index',
+      name: 'public/index.php',
+      category: 'Laravel Core & Entrypoints',
+      type: 'php',
+      path: 'backend-laravel/public/index.php',
+      description: 'HTTP front controller handling web & API requests'
+    },
+    {
+      id: 'database-seeder',
+      name: 'DatabaseSeeder.php',
+      category: 'Database Schema',
+      type: 'php',
+      path: 'backend-laravel/database/seeders/DatabaseSeeder.php',
+      description: 'Automated database seeder for Hotel Mount Manor rooms, tenants & API keys'
+    },
+    {
       id: 'laravel-routes',
       name: 'routes/api.php',
       category: 'Laravel Routing',

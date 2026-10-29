@@ -1,0 +1,9 @@
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+/storage/*.key
+/storage/oauth-*.key
+/storage/oauth-*.pub
+/public/storage
