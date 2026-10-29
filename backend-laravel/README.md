@@ -7,6 +7,13 @@ This directory contains the production Laravel 11 backend code for the modernize
 ```
 backend-laravel/
 ├── app/
+│   ├── Models/
+│   │   ├── Property.php                 # Hotel tenant model & relationships
+│   │   ├── Room.php                     # Room inventory & tariff casts
+│   │   ├── Booking.php                  # Room bookings & loyalty points
+│   │   ├── DiningReservation.php        # Delicia table reservations
+│   │   ├── BanquetReservation.php       # Chancellor Hall banquet quotes
+│   │   └── ApiKey.php                   # Developer API keys with scopes
 │   ├── Http/
 │   │   ├── Controllers/Api/V1/
 │   │   │   ├── PropertyController.php       # Multi-tenant property CRUD
@@ -14,7 +21,8 @@ backend-laravel/
 │   │   │   ├── BookingController.php        # Direct guest reservation engine
 │   │   │   ├── DiningController.php         # Delicia Restaurant reservations
 │   │   │   ├── BanquetController.php        # Chancellor Hall events & inquiries
-│   │   │   └── DeveloperKeyController.php   # 3rd-party API token provisioning
+│   │   │   ├── DeveloperKeyController.php   # 3rd-party API token provisioning
+│   │   │   └── LoyaltyController.php        # Loyalty tier & reward calculations
 │   │   └── Middleware/
 │   │       └── TenantResolver.php           # Scopes queries by X-Tenant-ID
 ├── database/

@@ -800,6 +800,54 @@ app.get('/api/v1/backend-files', (_req: Request, res: Response) => {
       description: 'Resolves hotel tenant via X-Tenant-ID header and isolates DB queries'
     },
     {
+      id: 'model-property',
+      name: 'Property.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/Property.php',
+      description: 'Multi-tenant hotel property model with room & booking relationships'
+    },
+    {
+      id: 'model-room',
+      name: 'Room.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/Room.php',
+      description: 'Room inventory model with amenities casting and price tariffs'
+    },
+    {
+      id: 'model-booking',
+      name: 'Booking.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/Booking.php',
+      description: 'Room reservation model with loyalty calculation and date casting'
+    },
+    {
+      id: 'model-dining',
+      name: 'DiningReservation.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/DiningReservation.php',
+      description: 'Delicia Multi-Cuisine table reservation model'
+    },
+    {
+      id: 'model-banquet',
+      name: 'BanquetReservation.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/BanquetReservation.php',
+      description: 'Chancellor Grand Hall event booking and quote model'
+    },
+    {
+      id: 'model-apikey',
+      name: 'ApiKey.php',
+      category: 'Eloquent Models',
+      type: 'php',
+      path: 'backend-laravel/app/Models/ApiKey.php',
+      description: 'Developer token model with hidden secret hash and scope casting'
+    },
+    {
       id: 'db-migration',
       name: 'create_mountmanor_saas_tables.php',
       category: 'Database Schema',
