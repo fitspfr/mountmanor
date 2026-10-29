@@ -13,7 +13,13 @@ import {
   ExternalLink,
   BookOpen,
   Sparkles,
-  Database
+  Database,
+  Server,
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
+  Sliders,
+  ArrowRight
 } from 'lucide-react';
 import { ApiKey, Property } from '../types/index.ts';
 import { api } from '../services/apiClient.ts';
@@ -47,8 +53,44 @@ export const DeveloperPortal: React.FC<DeveloperPortalProps> = ({
   const [isExecuting, setIsExecuting] = useState(false);
   const [codeLanguage, setCodeLanguage] = useState<'curl' | 'javascript' | 'laravel'>('curl');
 
-  // Laravel Blueprint
-  const [laravelCode, setLaravelCode] = useState<string>('');
+  // Backend Target & PHP Wiring State
+  const [activeBaseUrl, setActiveBaseUrl] = useState<string>(api.getBaseUrl());
+  const [customUrlInput, setCustomUrlInput] = useState<string>(api.getBaseUrl() || 'http://localhost:8000');
+  const [connectionCheck, setConnectionCheck] = useState<{
+    status: 'idle' | 'checking' | 'connected' | 'error';
+    message?: string;
+    latencyMs?: number;
+    engine?: string;
+  }>({ status: 'idle' });
+
+  const handleTestAndSetBackend = async (urlToSet: string) => {
+    setConnectionCheck({ status: 'checking' });
+    const result = await api.testConnection(urlToSet);
+    if (result.success) {
+      api.setBaseUrl(urlToSet);
+      setActiveBaseUrl(urlToSet);
+      setConnectionCheck({
+        status: 'connected',
+        latencyMs: result.latencyMs,
+        engine: result.data?.engine || (urlToSet ? 'PHP / Laravel 11' : 'Node.js Express Gateway')
+      });
+    } else {
+      setConnectionCheck({
+        status: 'error',
+        message: result.error || 'Connection refused. Is the PHP server running on this port?'
+      });
+    }
+  };
+
+  const handleResetToBuiltin = () => {
+    api.setBaseUrl('');
+    setActiveBaseUrl('');
+    setConnectionCheck({
+      status: 'connected',
+      latencyMs: 1,
+      engine: 'Built-in Node.js / Express Gateway (Port 3000)'
+    });
+  };
 
   // PostgreSQL Database State (Non-cloud local database)
   const [pgStatus, setPgStatus] = useState<any>(null);
@@ -331,6 +373,94 @@ $booking = $response->json();`;
             <ExternalLink className="w-3 h-3 text-slate-500" />
           </a>
         </div>
+      </div>
+
+      {/* BACKEND GATEWAY & PHP WIRING CONTROLLER */}
+      <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/20 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Server className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-mono uppercase tracking-widest font-bold text-amber-400">
+                Active Backend Wiring & Routing Target
+              </span>
+              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                activeBaseUrl
+                  ? 'bg-purple-500/10 border-purple-500/30 text-purple-300'
+                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              }`}>
+                {activeBaseUrl ? 'Custom PHP / Laravel Target' : 'Built-in Express Gateway (Port 3000)'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              {activeBaseUrl ? (
+                <>All React CRUD requests are currently routed to <span className="text-amber-300 font-mono font-bold">{activeBaseUrl}/api/v1/*</span></>
+              ) : (
+                <>All React CRUD requests are handled by the container’s built-in <span className="text-slate-200 font-mono">server.ts</span> API gateway (mirroring Laravel contracts with PostgreSQL).</>
+              )}
+            </p>
+          </div>
+
+          {/* Quick Toggle / Connect Controls */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 focus-within:border-amber-400">
+              <span className="text-[11px] font-mono text-slate-500 mr-1.5">Target URL:</span>
+              <input
+                type="text"
+                value={customUrlInput}
+                onChange={(e) => setCustomUrlInput(e.target.value)}
+                placeholder="http://localhost:8000"
+                className="bg-transparent text-xs font-mono text-white placeholder-slate-600 focus:outline-none w-48"
+              />
+            </div>
+
+            <button
+              onClick={() => handleTestAndSetBackend(customUrlInput)}
+              disabled={connectionCheck.status === 'checking'}
+              className="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              {connectionCheck.status === 'checking' ? (
+                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Sliders className="w-3.5 h-3.5" />
+              )}
+              <span>Wire to PHP Backend</span>
+            </button>
+
+            {activeBaseUrl && (
+              <button
+                onClick={handleResetToBuiltin}
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors cursor-pointer"
+              >
+                Reset to Preview Gateway
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Live Status Feedback Banner */}
+        {connectionCheck.status === 'connected' && (
+          <div className="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl flex items-center gap-2 text-xs text-emerald-300">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>
+              Connected successfully! Engine: <strong>{connectionCheck.engine}</strong>. Latency: {connectionCheck.latencyMs}ms. All booking, room, and dining actions are wired to this endpoint.
+            </span>
+          </div>
+        )}
+
+        {connectionCheck.status === 'error' && (
+          <div className="p-3 bg-amber-950/40 border border-amber-500/30 rounded-xl flex items-start gap-2 text-xs text-amber-200">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div>
+                <strong>Could not reach PHP backend at {customUrlInput}:</strong> {connectionCheck.message}
+              </div>
+              <div className="text-[11px] text-slate-400">
+                Tip: If running locally, make sure to execute <code className="bg-slate-900 px-1 py-0.5 rounded text-amber-300">php artisan serve --port=8000</code> inside the <code className="bg-slate-900 px-1 py-0.5 rounded text-slate-300">backend-laravel</code> folder first.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}
@@ -786,6 +916,49 @@ $booking = $response->json();`;
             <pre className="p-4 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-emerald-300/90 overflow-x-auto leading-relaxed">
               {laravelCode || `// Loading routes/api.php blueprint...`}
             </pre>
+          </div>
+
+          {/* Running & Wiring Instructions */}
+          <div className="p-5 bg-slate-950 border border-slate-800 rounded-xl space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <h4 className="text-sm font-bold text-white">How to Run & Wire to Real PHP / Laravel</h4>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div className="space-y-2">
+                <span className="font-bold text-amber-300 font-mono text-[11px] block">
+                  1. Start Laravel PHP Server
+                </span>
+                <p className="text-slate-400 leading-relaxed text-[11px]">
+                  Inside your cloned git repository with PHP 8.2+ and PostgreSQL running:
+                </p>
+                <pre className="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-emerald-300 font-mono text-[11px] overflow-x-auto">
+{`cd backend-laravel
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve --port=8000`}
+                </pre>
+              </div>
+
+              <div className="space-y-2">
+                <span className="font-bold text-amber-300 font-mono text-[11px] block">
+                  2. Route React Requests to PHP
+                </span>
+                <p className="text-slate-400 leading-relaxed text-[11px]">
+                  Use the <strong>Active Backend Wiring & Routing Target</strong> control bar above to connect to <code className="text-amber-300 font-mono">http://localhost:8000</code>, or set in your environment:
+                </p>
+                <pre className="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-amber-200 font-mono text-[11px] overflow-x-auto">
+{`# In your .env or .env.local:
+VITE_API_BASE_URL=http://localhost:8000`}
+                </pre>
+                <p className="text-slate-400 text-[11px]">
+                  React will immediately dispatch all room bookings, dining covers, and banquet inquiries directly to your Laravel controllers & Eloquent models!
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

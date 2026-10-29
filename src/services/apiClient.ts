@@ -12,6 +12,15 @@ import {
 class ApiClient {
   private currentTenantId: string = 'mount-manor';
   private bearerToken: string | null = null;
+  private baseUrl: string = '';
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('mm_api_base_url');
+      const envUrl = (import.meta as any).env?.VITE_API_BASE_URL || '';
+      this.baseUrl = (saved !== null ? saved : envUrl).replace(/\/+$/, '');
+    }
+  }
 
   setTenant(tenantId: string) {
     this.currentTenantId = tenantId;
@@ -29,6 +38,42 @@ class ApiClient {
     return this.bearerToken;
   }
 
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
+  setBaseUrl(url: string) {
+    this.baseUrl = url.trim().replace(/\/+$/, '');
+    if (typeof window !== 'undefined') {
+      if (this.baseUrl) {
+        localStorage.setItem('mm_api_base_url', this.baseUrl);
+      } else {
+        localStorage.removeItem('mm_api_base_url');
+      }
+    }
+  }
+
+  getFullUrl(endpoint: string): string {
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    return this.baseUrl ? `${this.baseUrl}${cleanEndpoint}` : cleanEndpoint;
+  }
+
+  async testConnection(targetUrl?: string): Promise<{ success: boolean; data?: any; error?: string; latencyMs?: number }> {
+    const base = targetUrl !== undefined ? targetUrl.trim().replace(/\/+$/, '') : this.baseUrl;
+    const url = `${base || ''}/api/v1/health`;
+    const start = performance.now();
+    try {
+      const res = await fetch(url, {
+        headers: { 'X-Tenant-ID': this.currentTenantId }
+      });
+      const data = await res.json();
+      const latencyMs = Math.round(performance.now() - start);
+      return { success: res.ok, data, latencyMs };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Connection refused', latencyMs: Math.round(performance.now() - start) };
+    }
+  }
+
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -40,7 +85,8 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${this.bearerToken}`;
     }
 
-    const response = await fetch(endpoint, {
+    const fullUrl = this.getFullUrl(endpoint);
+    const response = await fetch(fullUrl, {
       ...options,
       headers
     });
@@ -192,13 +238,13 @@ class ApiClient {
 
   // OpenAPI Specification
   async getOpenApiSpec(): Promise<Record<string, unknown>> {
-    const res = await fetch('/api/v1/docs/openapi.json');
+    const res = await fetch(this.getFullUrl('/api/v1/docs/openapi.json'));
     return res.json();
   }
 
   // Laravel Blueprint
   async getLaravelBlueprint(): Promise<{ framework: string; routesPhp: string; composerPackages: string[] }> {
-    const res = await fetch('/api/v1/laravel/routes');
+    const res = await fetch(this.getFullUrl('/api/v1/laravel/routes'));
     const json = await res.json();
     return json.data;
   }

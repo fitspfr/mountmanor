@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\BookingController;
 use App\Http\Controllers\Api\V1\DiningController;
 use App\Http\Controllers\Api\V1\BanquetController;
 use App\Http\Controllers\Api\V1\DeveloperKeyController;
+use App\Http\Controllers\Api\V1\LoyaltyController;
 use App\Http\Middleware\TenantResolver;
 
 /*
@@ -60,6 +61,6 @@ Route::prefix('v1')->middleware([TenantResolver::class, 'throttle:120,1'])->grou
     Route::delete('/developer/keys/{id}', [DeveloperKeyController::class, 'destroy']);
 
     // 7. Guest Loyalty Points & Stay-Duration Tiers
-    Route::get('/loyalty', [\\App\\Http\\Controllers\\Api\\V1\\LoyaltyController::class, 'show']);
-    Route::post('/loyalty/redeem', [\\App\\Http\\Controllers\\Api\\V1\\LoyaltyController::class, 'redeem']);
+    Route::get('/loyalty', [LoyaltyController::class, 'show']);
+    Route::post('/loyalty/redeem', [LoyaltyController::class, 'redeem']);
 });

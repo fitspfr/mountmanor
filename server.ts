@@ -856,6 +856,22 @@ app.get('/api/v1/backend-files', (_req: Request, res: Response) => {
       description: 'PostgreSQL/MySQL relational schema with foreign keys and tenant indexing'
     },
     {
+      id: 'cors-config',
+      name: 'cors.php',
+      category: 'Configuration',
+      type: 'php',
+      path: 'backend-laravel/config/cors.php',
+      description: 'CORS policy allowing cross-origin requests from React frontend'
+    },
+    {
+      id: 'env-example',
+      name: '.env.example',
+      category: 'Configuration',
+      type: 'env',
+      path: 'backend-laravel/.env.example',
+      description: 'Local PostgreSQL, port, and Sanctum configuration template'
+    },
+    {
       id: 'express-server',
       name: 'server.ts (Live Gateway)',
       category: 'Runtime Gateway',
